@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FormSubmission {
+  id        Int      @id @default(autoincrement())
+  step      Int      @default(1)
+  formData  Json     // Stores the form data as JSON
+  status    String   @default("submitted") // submitted, completed, failed
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("form_submissions")
+}
+
+model ValidationLog {
+  id        Int      @id @default(autoincrement())
+  fieldName String
+  value     String?
+  isValid   Boolean
+  message   String
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@map("validation_logs")
+}
+
+model PincodeCache {
+  id        Int      @id @default(autoincrement())
+  pincode   String   @unique
+  city      String
+  state     String
+  district  String?
+  area      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pincode_cache")
+} 
